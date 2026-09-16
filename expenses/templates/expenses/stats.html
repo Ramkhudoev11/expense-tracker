@@ -1,0 +1,80 @@
+{% extends 'expenses/base.html' %}
+{% load expense_extras %}
+{% block title %}Статистика{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Статистика по категориям</h1>
+
+<div class="row g-4">
+    <div class="col-12 col-lg-5">
+        <div class="card p-4">
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+    <div class="col-12 col-lg-7">
+        <div class="card p-3">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Категория</th>
+                            <th>Сумма</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in category_totals %}
+                        <tr>
+                            <td>{{ item.category__name|category_icon }} {{ item.category__name }}</td>
+                            <td class="fw-semibold">{{ item.total }} сомонӣ</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2">
+                                <div class="empty-state">
+                                    <i class="bi bi-pie-chart"></i>
+                                    Данных пока нет
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+    const labels = {{ chart_labels|safe }};
+    const values = {{ chart_values|safe }};
+
+    if (values.length > 0) {
+        const ctx = document.getElementById('categoryChart');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: values,
+                    backgroundColor: [
+                        '#818cf8', '#34d399', '#fbbf24', '#f472b6',
+                        '#60a5fa', '#a78bfa', '#fb923c', '#4ade80'
+                    ],
+                    borderWidth: 0,
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#e2e8f0', padding: 16 }
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}
