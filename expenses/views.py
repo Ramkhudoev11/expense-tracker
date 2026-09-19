@@ -1,9 +1,14 @@
+import hmac
+import hashlib
 import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.db.models import Sum
-from .models import Expense
+from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse
+from .models import Expense, Subscription
 from .forms import ExpenseForm, RegisterForm
 
 
@@ -66,6 +71,10 @@ def delete_expense(request, pk):
 
 @login_required
 def stats(request):
+    subscription = getattr(request.user, 'subscription', None)
+    if not subscription or not subscription.is_active:
+        return redirect('pricing')
+
     category_totals = (
         Expense.objects
         .filter(user=request.user)
@@ -90,6 +99,7 @@ def register(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
+            Subscription.objects.create(user=user)
             login(request, user)
             return redirect('expense_list')
     else:
@@ -100,3 +110,78 @@ def register(request):
 def logout_view(request):
     logout(request)
     return redirect('expense_list')
+
+
+@login_required
+def pricing(request):
+    subscription, _ = Subscription.objects.get_or_create(user=request.user)
+    return render(request, 'expenses/pricing.html', {
+        'subscription': subscription,
+        'client_token': settings.PADDLE_CLIENT_TOKEN,
+        'price_id': settings.PADDLE_PRICE_ID,
+    })
+
+
+@login_required
+def checkout_success(request):
+    return render(request, 'expenses/checkout_success.html')
+
+
+def verify_paddle_signature(request):
+    """Проверяет подпись вебхука Paddle."""
+    signature_header = request.META.get('HTTP_PADDLE_SIGNATURE', '')
+    if not signature_header:
+        return False
+
+    parts = dict(item.split('=') for item in signature_header.split(';'))
+    timestamp = parts.get('ts')
+    signature = parts.get('h1')
+
+    if not timestamp or not signature:
+        return False
+
+    signed_payload = f"{timestamp}:{request.body.decode('utf-8')}"
+    computed = hmac.new(
+        settings.PADDLE_WEBHOOK_SECRET.encode('utf-8'),
+        signed_payload.encode('utf-8'),
+        hashlib.sha256
+    ).hexdigest()
+
+    return hmac.compare_digest(computed, signature)
+
+
+@csrf_exempt
+def paddle_webhook(request):
+    if not verify_paddle_signature(request):
+        return HttpResponse(status=403)
+
+    data = json.loads(request.body)
+    event_type = data.get('event_type')
+    event_data = data.get('data', {})
+
+    if event_type == 'transaction.completed':
+        custom_data = event_data.get('custom_data') or {}
+        user_id = custom_data.get('user_id')
+        customer_id = event_data.get('customer_id')
+        subscription_id = event_data.get('subscription_id')
+
+        if user_id:
+            try:
+                sub = Subscription.objects.get(user_id=user_id)
+                sub.is_active = True
+                sub.paddle_customer_id = customer_id
+                sub.paddle_subscription_id = subscription_id
+                sub.save()
+            except Subscription.DoesNotExist:
+                pass
+
+    elif event_type in ('subscription.canceled', 'subscription.paused'):
+        subscription_id = event_data.get('id')
+        try:
+            sub = Subscription.objects.get(paddle_subscription_id=subscription_id)
+            sub.is_active = False
+            sub.save()
+        except Subscription.DoesNotExist:
+            pass
+
+    return HttpResponse(status=200)

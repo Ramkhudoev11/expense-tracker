@@ -81,3 +81,8 @@ LOGIN_REDIRECT_URL = 'expense_list'
 LOGOUT_REDIRECT_URL = 'expense_list'
 
 CSRF_TRUSTED_ORIGINS = config('CSRF_TRUSTED_ORIGINS', default='').split(',') if config('CSRF_TRUSTED_ORIGINS', default='') else []
+
+PADDLE_API_KEY = config('PADDLE_API_KEY', default='')
+PADDLE_CLIENT_TOKEN = config('PADDLE_CLIENT_TOKEN', default='')
+PADDLE_PRICE_ID = config('PADDLE_PRICE_ID', default='')
+PADDLE_WEBHOOK_SECRET = config('PADDLE_WEBHOOK_SECRET', default='')

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'expenses/base.html' %}
+{% block title %}Спасибо{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Спасибо за подписку!</h1>
+<div class="card p-4" style="max-width: 500px;">
+    <p>Оплата обрабатывается — это может занять несколько секунд. Статус подписки обновится автоматически.</p>
+    <a href="{% url 'expense_list' %}" class="btn btn-primary">На главную</a>
+</div>
+{% endblock %}

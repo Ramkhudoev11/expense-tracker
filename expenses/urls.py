@@ -12,4 +12,7 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('login/', LoginView.as_view(template_name='expenses/login.html', authentication_form=LoginForm), name='login'),
     path('logout/', views.logout_view, name='logout'),
+    path('pricing/', views.pricing, name='pricing'),
+    path('pricing/success/', views.checkout_success, name='checkout_success'),
+    path('paddle/webhook/', views.paddle_webhook, name='paddle_webhook'),
 ]

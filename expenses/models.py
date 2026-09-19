@@ -26,3 +26,18 @@ class Expense(models.Model):
         verbose_name = "Расход"
         verbose_name_plural = "Расходы"
         ordering = ['-date']
+
+
+class Subscription(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='subscription')
+    is_active = models.BooleanField(default=False, verbose_name="Активна")
+    paddle_customer_id = models.CharField(max_length=255, blank=True, null=True)
+    paddle_subscription_id = models.CharField(max_length=255, blank=True, null=True)
+    current_period_end = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.user.username} — {'Премиум' if self.is_active else 'Бесплатно'}"
+
+    class Meta:
+        verbose_name = "Подписка"
+        verbose_name_plural = "Подписки"

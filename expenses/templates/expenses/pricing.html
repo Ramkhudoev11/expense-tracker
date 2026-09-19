@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends 'expenses/base.html' %}
+{% block title %}Премиум{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Премиум подписка</h1>
+
+<div class="card p-4" style="max-width: 500px;">
+    {% if subscription and subscription.is_active %}
+        <p>У вас уже активна премиум подписка! Спасибо за поддержку.</p>
+        <a href="{% url 'stats' %}" class="btn btn-primary">Перейти к статистике</a>
+    {% else %}
+        <h4>Что даёт премиум:</h4>
+        <ul class="text-muted">
+            <li>Подробная статистика по категориям</li>
+            <li>Круговая диаграмма расходов</li>
+            <li>Приоритетная поддержка</li>
+        </ul>
+        <button id="checkout-btn" class="btn btn-success w-100">Оформить за 5$/месяц</button>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+<script>
+    Paddle.Environment.set("production");
+    Paddle.Initialize({
+        token: "{{ client_token }}"
+    });
+
+    const checkoutBtn = document.getElementById('checkout-btn');
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener('click', function() {
+            Paddle.Checkout.open({
+                items: [{ priceId: "{{ price_id }}", quantity: 1 }],
+                customData: {
+                    user_id: "{{ request.user.id }}"
+                },
+                settings: {
+                    successUrl: window.location.origin + "{% url 'checkout_success' %}"
+                }
+            });
+        });
+    }
+</script>
+{% endblock %}
