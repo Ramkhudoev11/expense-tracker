@@ -185,3 +185,14 @@ def paddle_webhook(request):
             pass
 
     return HttpResponse(status=200)
+
+def terms(request):
+    return render(request, 'expenses/terms.html')
+
+
+def privacy(request):
+    return render(request, 'expenses/privacy.html')
+
+
+def refund(request):
+    return render(request, 'expenses/refund.html')

@@ -15,4 +15,7 @@ urlpatterns = [
     path('pricing/', views.pricing, name='pricing'),
     path('pricing/success/', views.checkout_success, name='checkout_success'),
     path('paddle/webhook/', views.paddle_webhook, name='paddle_webhook'),
+    path('terms/', views.terms, name='terms'),
+    path('privacy/', views.privacy, name='privacy'),
+    path('refund/', views.refund, name='refund'),
 ]
