@@ -27,6 +27,7 @@ def expense_list(request):
     context = {
         'expenses': expenses,
         'total': total,
+        'total_json': json.dumps(float(total)),
         'date_from': date_from or '',
         'date_to': date_to or '',
     }
