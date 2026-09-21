@@ -31,15 +31,20 @@
     const checkoutBtn = document.getElementById('checkout-btn');
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', function() {
-            Paddle.Checkout.open({
-                items: [{ priceId: "{{ price_id }}", quantity: 1 }],
-                customData: {
-                    user_id: "{{ request.user.id }}"
-                },
-                settings: {
-                    successUrl: window.location.origin + "{% url 'checkout_success' %}"
-                }
-            });
+            try {
+                Paddle.Checkout.open({
+                    items: [{ priceId: "{{ price_id }}", quantity: 1 }],
+                    customData: {
+                        user_id: "{{ request.user.id }}"
+                    },
+                    settings: {
+                        successUrl: window.location.origin + "{% url 'checkout_success' %}"
+                    }
+                });
+            } catch (e) {
+                console.error('Paddle checkout error:', e);
+                alert('Не удалось открыть окно оплаты. Попробуйте обновить страницу и повторить попытку.');
+            }
         });
     }
 </script>
