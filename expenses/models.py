@@ -41,3 +41,17 @@ class Subscription(models.Model):
     class Meta:
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
+
+class ScheduleItem(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedule_items', verbose_name="Пользователь")
+    time = models.TimeField(verbose_name="Время")
+    title = models.CharField(max_length=200, verbose_name="Дело")
+    notes = models.CharField(max_length=255, blank=True, verbose_name="Заметка")
+
+    def __str__(self):
+        return f"{self.time.strftime('%H:%M')} — {self.title}"
+
+    class Meta:
+        verbose_name = "Пункт расписания"
+        verbose_name_plural = "Распорядок дня"
+        ordering = ['time']

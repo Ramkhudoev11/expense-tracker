@@ -35,3 +35,15 @@ class LoginForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+
+from  .models import ScheduleItem
+
+class ScheduleItemForm(forms.ModelForm):
+    class Meta:
+        model = ScheduleItem
+        fields = ['time', 'title', 'notes']
+        widgets = {
+            'time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-control'}),
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Например: Подъём'}),
+            'notes': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Необязательно'}),
+        }

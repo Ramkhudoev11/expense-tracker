@@ -197,3 +197,47 @@ def privacy(request):
 
 def refund(request):
     return render(request, 'expenses/refund.html')
+
+from .models import ScheduleItem
+from .forms import ScheduleItemForm
+
+@login_required
+def schedule_list(request):
+    items = ScheduleItem.objects.filter(user=request.user)
+    return render(request, 'expenses/schedule_list.html', {'items': items})
+
+
+@login_required
+def add_schedule_item(request):
+    if request.method == 'POST':
+        form = ScheduleItemForm(request.POST)
+        if form.is_valid():
+            item = form.save(commit=False)
+            item.user = request.user
+            item.save()
+            return redirect('schedule_list')
+    else:
+        form = ScheduleItemForm()
+    return render(request, 'expenses/schedule_form.html', {'form': form, 'is_edit': False})
+
+
+@login_required
+def edit_schedule_item(request, pk):
+    item = get_object_or_404(ScheduleItem, pk=pk, user=request.user)
+    if request.method == 'POST':
+        form = ScheduleItemForm(request.POST, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('schedule_list')
+    else:
+        form = ScheduleItemForm(instance=item)
+    return render(request, 'expenses/schedule_form.html', {'form': form, 'is_edit': True})
+
+
+@login_required
+def delete_schedule_item(request, pk):
+    item = get_object_or_404(ScheduleItem, pk=pk, user=request.user)
+    if request.method == 'POST':
+        item.delete()
+        return redirect('schedule_list')
+    return render(request, 'expenses/schedule_confirm_delete.html', {'item': item})

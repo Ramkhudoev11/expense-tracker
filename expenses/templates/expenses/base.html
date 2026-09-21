@@ -271,6 +271,7 @@
                         <a class="btn btn-outline-light btn-sm" href="{% url 'add_expense' %}"><i class="bi bi-plus-lg"></i> Добавить</a>
                         <a class="btn btn-outline-light btn-sm" href="{% url 'stats' %}"><i class="bi bi-bar-chart"></i> Статистика</a>
                         <a class="btn btn-outline-light btn-sm" href="{% url 'pricing' %}"><i class="bi bi-star"></i> Премиум</a>
+                        <a class="btn btn-outline-light btn-sm" href="{% url 'schedule_list' %}"><i class="bi bi-calendar3"></i> Распорядок</a>
                         <span class="navbar-text text-light small mx-1">{{ user.username }}</span>
                         <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i></a>
                     {% else %}
