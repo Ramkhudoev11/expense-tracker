@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,16 +8,52 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #818cf8;
-            --primary-dark: #6366f1;
-            --accent: #34d399;
-            --bg: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.6);
-            --text: #e2e8f0;
-            --text-muted: #94a3b8;
-            --border: rgba(148, 163, 184, 0.15);
-        }
+        :root, [data-theme="dark"] {
+    --primary: #818cf8;
+    --primary-dark: #6366f1;
+    --accent: #34d399;
+    --bg: #0f172a;
+    --card-bg: rgba(30, 41, 59, 0.6);
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --border: rgba(148, 163, 184, 0.15);
+}
+
+[data-theme="light"] {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --accent: #10b981;
+    --bg: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --border: rgba(100, 116, 139, 0.15);
+}
+
+[data-theme="light"] body::before {
+    color: rgba(100, 116, 139, 0.05);
+}
+
+[data-theme="light"] .navbar {
+    background: rgba(255, 255, 255, 0.85);
+}
+
+[data-theme="light"] .navbar-brand {
+    color: var(--text) !important;
+}
+
+[data-theme="light"] .page-title {
+    color: var(--text);
+}
+
+[data-theme="light"] .navbar .btn-outline-light {
+    color: var(--text);
+    border-color: var(--border);
+}
+
+[data-theme="light"] .navbar .btn-outline-light:hover {
+    background: rgba(0,0,0,0.05);
+}
 
         body {
             font-family: 'Inter', sans-serif;
@@ -269,9 +305,19 @@
                 <div class="d-flex flex-wrap align-items-center gap-2 mt-3 mt-lg-0">
                     {% if user.is_authenticated %}
                         <a class="btn btn-outline-light btn-sm" href="{% url 'add_expense' %}"><i class="bi bi-plus-lg"></i> Добавить</a>
+                        <a class="btn btn-outline-light btn-sm" href="{% url 'schedule_list' %}"><i class="bi bi-calendar3"></i> Распорядок</a>
+                        <a class="btn btn-outline-light btn-sm" href="{% url 'income_list' %}"><i class="bi bi-cash-coin"></i> Доходы</a>
                         <a class="btn btn-outline-light btn-sm" href="{% url 'stats' %}"><i class="bi bi-bar-chart"></i> Статистика</a>
                         <a class="btn btn-outline-light btn-sm" href="{% url 'pricing' %}"><i class="bi bi-star"></i> Премиум</a>
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'schedule_list' %}"><i class="bi bi-calendar3"></i> Распорядок</a>
+                        {% if subscription and subscription.is_active %}
+    <button id="theme-toggle" class="btn btn-outline-light btn-sm" title="Светлая/тёмная тема">
+        <i class="bi bi-sun-fill" id="theme-icon"></i>
+    </button>
+{% else %}
+    <a href="{% url 'pricing' %}" class="btn btn-outline-light btn-sm" title="Светлая тема доступна с премиум">
+        <i class="bi bi-lock-fill"></i>
+    </a>
+{% endif %}
                         <span class="navbar-text text-light small mx-1">{{ user.username }}</span>
                         <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i></a>
                     {% else %}
@@ -295,6 +341,33 @@
         <a href="{% url 'privacy' %}" class="text-muted me-3">Конфиденциальность</a>
         <a href="{% url 'refund' %}" class="text-muted">Возврат средств</a>
     </footer>
+
+    <script>
+    (function() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        const toggleBtn = document.getElementById('theme-toggle');
+        const icon = document.getElementById('theme-icon');
+
+        function updateIcon(theme) {
+            if (icon) {
+                icon.className = theme === 'light' ? 'bi bi-moon-fill' : 'bi bi-sun-fill';
+            }
+        }
+        updateIcon(savedTheme);
+
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                updateIcon(next);
+            });
+        }
+    })();
+</script>
 
 </body>
 </body>
