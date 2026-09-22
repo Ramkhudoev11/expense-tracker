@@ -8,8 +8,8 @@ from django.db.models import Sum
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
-from .models import Expense, Subscription
-from .forms import ExpenseForm, RegisterForm
+from .models import Expense, Income, Subscription, ScheduleItem
+from .forms import ExpenseForm, IncomeForm, RegisterForm, ScheduleItemForm
 
 
 def expense_list(request):
@@ -37,28 +37,28 @@ def expense_list(request):
 @login_required
 def add_expense(request):
     if request.method == 'POST':
-        form = ExpenseForm(request.POST)
+        form = ExpenseForm(request.POST, user=request.user)
         if form.is_valid():
             expense = form.save(commit=False)
             expense.user = request.user
             expense.save()
             return redirect('expense_list')
     else:
-        form = ExpenseForm()
-    return render(request, 'expenses/expense_form.html', {'form': form, 'is_edit': False})
+        form = ExpenseForm(user=request.user)
+    return render(request, 'expenses/expense_form.html', {'form': form, 'is_edit': False, 'title': 'Добавить расход'})
 
 
 @login_required
 def edit_expense(request, pk):
     expense = get_object_or_404(Expense, pk=pk, user=request.user)
     if request.method == 'POST':
-        form = ExpenseForm(request.POST, instance=expense)
+        form = ExpenseForm(request.POST, instance=expense, user=request.user)
         if form.is_valid():
             form.save()
             return redirect('expense_list')
     else:
-        form = ExpenseForm(instance=expense)
-    return render(request, 'expenses/expense_form.html', {'form': form, 'is_edit': True})
+        form = ExpenseForm(instance=expense, user=request.user)
+    return render(request, 'expenses/expense_form.html', {'form': form, 'is_edit': True, 'title': 'Редактировать расход'})
 
 
 @login_required
@@ -70,85 +70,170 @@ def delete_expense(request, pk):
     return render(request, 'expenses/expense_confirm_delete.html', {'expense': expense})
 
 
+def income_list(request):
+    incomes = Income.objects.filter(user=request.user) if request.user.is_authenticated else Income.objects.none()
+
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+
+    if date_from:
+        incomes = incomes.filter(date__gte=date_from)
+    if date_to:
+        incomes = incomes.filter(date__lte=date_to)
+
+    total = sum(i.amount for i in incomes)
+    context = {
+        'incomes': incomes,
+        'total': total,
+        'total_json': json.dumps(float(total)),
+        'date_from': date_from or '',
+        'date_to': date_to or '',
+    }
+    return render(request, 'expenses/income_list.html', context)
+
+
+@login_required
+def add_income(request):
+    if request.method == 'POST':
+        form = IncomeForm(request.POST, user=request.user)
+        if form.is_valid():
+            income = form.save(commit=False)
+            income.user = request.user
+            income.save()
+            return redirect('income_list')
+    else:
+        form = IncomeForm(user=request.user)
+    return render(request, 'expenses/income_form.html', {'form': form, 'is_edit': False, 'title': 'Добавить доход'})
+
+
+@login_required
+def edit_income(request, pk):
+    income = get_object_or_404(Income, pk=pk, user=request.user)
+    if request.method == 'POST':
+        form = IncomeForm(request.POST, instance=income, user=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('income_list')
+    else:
+        form = IncomeForm(instance=income, user=request.user)
+        return render(request, 'expenses/income_form.html',
+                      {'form': form, 'is_edit': True, 'title': 'Редактировать доход'})
+
+@login_required
+def delete_income(request, pk):
+            income = get_object_or_404(Income, pk=pk, user=request.user)
+            if request.method == 'POST':
+                income.delete()
+                return redirect('income_list')
+            return render(request, 'expenses/income_confirm_delete.html', {'income': income})
+
+@login_required
+def schedule_list(request):
+            items = ScheduleItem.objects.filter(user=request.user)
+            return render(request, 'expenses/schedule_list.html', {'items': items})
+
+@login_required
+def add_schedule_item(request):
+            if request.method == 'POST':
+                form = ScheduleItemForm(request.POST)
+                if form.is_valid():
+                    item = form.save(commit=False)
+                    item.user = request.user
+                    item.save()
+                    return redirect('schedule_list')
+            else:
+                form = ScheduleItemForm()
+            return render(request, 'expenses/schedule_form.html', {'form': form, 'is_edit': False})
+
+@login_required
+def edit_schedule_item(request, pk):
+            item = get_object_or_404(ScheduleItem, pk=pk, user=request.user)
+            if request.method == 'POST':
+                form = ScheduleItemForm(request.POST, instance=item)
+                if form.is_valid():
+                    form.save()
+                    return redirect('schedule_list')
+            else:
+                form = ScheduleItemForm(instance=item)
+            return render(request, 'expenses/schedule_form.html', {'form': form, 'is_edit': True})
+
+@login_required
+def delete_schedule_item(request, pk):
+            item = get_object_or_404(ScheduleItem, pk=pk, user=request.user)
+            if request.method == 'POST':
+                item.delete()
+                return redirect('schedule_list')
+            return render(request, 'expenses/schedule_confirm_delete.html', {'item': item})
+
 @login_required
 def stats(request):
-    subscription = getattr(request.user, 'subscription', None)
-    if not subscription or not subscription.is_active:
-        return redirect('pricing')
+            subscription = getattr(request.user, 'subscription', None)
+            if not subscription or not subscription.is_active:
+                return redirect('pricing')
 
-    category_totals = (
-        Expense.objects
-        .filter(user=request.user)
-        .values('category__name')
-        .annotate(total=Sum('amount'))
-        .order_by('-total')
-    )
+            category_totals = (
+                Expense.objects
+                .filter(user=request.user)
+                .values('category__name')
+                .annotate(total=Sum('amount'))
+                .order_by('-total')
+            )
 
-    chart_labels = [item['category__name'] or 'Без категории' for item in category_totals]
-    chart_values = [float(item['total']) for item in category_totals]
+            chart_labels = [item['category__name'] or 'Без категории' for item in category_totals]
+            chart_values = [float(item['total']) for item in category_totals]
 
-    context = {
-        'category_totals': category_totals,
-        'chart_labels': json.dumps(chart_labels),
-        'chart_values': json.dumps(chart_values),
-    }
-    return render(request, 'expenses/stats.html', context)
-
+            context = {
+                'category_totals': category_totals,
+                'chart_labels': json.dumps(chart_labels),
+                'chart_values': json.dumps(chart_values),
+            }
+            return render(request, 'expenses/stats.html', context)
 
 def register(request):
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save()
-            Subscription.objects.create(user=user)
-            login(request, user)
-            return redirect('expense_list')
-    else:
-        form = RegisterForm()
-    return render(request, 'expenses/register.html', {'form': form})
-
+            if request.method == 'POST':
+                form = RegisterForm(request.POST)
+                if form.is_valid():
+                    user = form.save()
+                    Subscription.objects.create(user=user)
+                    login(request, user)
+                    return redirect('expense_list')
+            else:
+                form = RegisterForm()
+            return render(request, 'expenses/register.html', {'form': form})
 
 def logout_view(request):
-    logout(request)
-    return redirect('expense_list')
-
+            logout(request)
+            return redirect('expense_list')
 
 @login_required
 def pricing(request):
-    subscription, _ = Subscription.objects.get_or_create(user=request.user)
-    return render(request, 'expenses/pricing.html', {
-        'subscription': subscription,
-        'client_token': settings.PADDLE_CLIENT_TOKEN,
-        'price_id': settings.PADDLE_PRICE_ID,
-    })
-
+            subscription, _ = Subscription.objects.get_or_create(user=request.user)
+            return render(request, 'expenses/pricing.html', {
+                'subscription': subscription,
+                'client_token': settings.PADDLE_CLIENT_TOKEN,
+                'price_id': settings.PADDLE_PRICE_ID,
+            })
 
 @login_required
 def checkout_success(request):
-    return render(request, 'expenses/checkout_success.html')
-
+            return render(request, 'expenses/checkout_success.html')
 
 def verify_paddle_signature(request):
-    """Проверяет подпись вебхука Paddle."""
-    signature_header = request.META.get('HTTP_PADDLE_SIGNATURE', '')
-    if not signature_header:
-        return False
-
-    parts = dict(item.split('=') for item in signature_header.split(';'))
-    timestamp = parts.get('ts')
-    signature = parts.get('h1')
-
-    if not timestamp or not signature:
-        return False
-
-    signed_payload = f"{timestamp}:{request.body.decode('utf-8')}"
-    computed = hmac.new(
-        settings.PADDLE_WEBHOOK_SECRET.encode('utf-8'),
-        signed_payload.encode('utf-8'),
-        hashlib.sha256
-    ).hexdigest()
-
-    return hmac.compare_digest(computed, signature)
+            signature_header = request.META.get('HTTP_PADDLE_SIGNATURE', '')
+            if not signature_header:
+                return False
+            parts = dict(item.split('=') for item in signature_header.split(';'))
+            timestamp = parts.get('ts')
+            signature = parts.get('h1')
+            if not timestamp or not signature:
+                return False
+            signed_payload = f"{timestamp}:{request.body.decode('utf-8')}"
+            computed = hmac.new(
+                settings.PADDLE_WEBHOOK_SECRET.encode('utf-8'),
+                signed_payload.encode('utf-8'),
+                hashlib.sha256
+            ).hexdigest()
+            return hmac.compare_digest(computed, signature)
 
 
 @csrf_exempt
@@ -165,7 +250,6 @@ def paddle_webhook(request):
         user_id = custom_data.get('user_id')
         customer_id = event_data.get('customer_id')
         subscription_id = event_data.get('subscription_id')
-
         if user_id:
             try:
                 sub = Subscription.objects.get(user_id=user_id)
@@ -187,6 +271,7 @@ def paddle_webhook(request):
 
     return HttpResponse(status=200)
 
+
 def terms(request):
     return render(request, 'expenses/terms.html')
 
@@ -197,47 +282,3 @@ def privacy(request):
 
 def refund(request):
     return render(request, 'expenses/refund.html')
-
-from .models import ScheduleItem
-from .forms import ScheduleItemForm
-
-@login_required
-def schedule_list(request):
-    items = ScheduleItem.objects.filter(user=request.user)
-    return render(request, 'expenses/schedule_list.html', {'items': items})
-
-
-@login_required
-def add_schedule_item(request):
-    if request.method == 'POST':
-        form = ScheduleItemForm(request.POST)
-        if form.is_valid():
-            item = form.save(commit=False)
-            item.user = request.user
-            item.save()
-            return redirect('schedule_list')
-    else:
-        form = ScheduleItemForm()
-    return render(request, 'expenses/schedule_form.html', {'form': form, 'is_edit': False})
-
-
-@login_required
-def edit_schedule_item(request, pk):
-    item = get_object_or_404(ScheduleItem, pk=pk, user=request.user)
-    if request.method == 'POST':
-        form = ScheduleItemForm(request.POST, instance=item)
-        if form.is_valid():
-            form.save()
-            return redirect('schedule_list')
-    else:
-        form = ScheduleItemForm(instance=item)
-    return render(request, 'expenses/schedule_form.html', {'form': form, 'is_edit': True})
-
-
-@login_required
-def delete_schedule_item(request, pk):
-    item = get_object_or_404(ScheduleItem, pk=pk, user=request.user)
-    if request.method == 'POST':
-        item.delete()
-        return redirect('schedule_list')
-    return render(request, 'expenses/schedule_confirm_delete.html', {'item': item})

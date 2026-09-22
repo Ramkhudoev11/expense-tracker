@@ -2,7 +2,16 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Category(models.Model):
+    EXPENSE = 'expense'
+    INCOME = 'income'
+    TYPE_CHOICES = [
+        (EXPENSE, 'Расход'),
+        (INCOME, 'Доход'),
+    ]
+
     name = models.CharField(max_length=100, verbose_name="Название")
+    category_type = models.CharField(max_length=10, choices=TYPE_CHOICES, default=EXPENSE, verbose_name="Тип")
+    is_premium = models.BooleanField(default=False, verbose_name="Только для премиум")
 
     def __str__(self):
         return self.name
@@ -20,11 +29,27 @@ class Expense(models.Model):
     description = models.CharField(max_length=255, blank=True, verbose_name="Описание")
 
     def __str__(self):
-        return f"{self.amount} руб. — {self.category}"
+        return f"{self.amount} — {self.category}"
 
     class Meta:
         verbose_name = "Расход"
         verbose_name_plural = "Расходы"
+        ordering = ['-date']
+
+
+class Income(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Пользователь")
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, verbose_name="Источник")
+    amount = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Сумма")
+    date = models.DateField(verbose_name="Дата")
+    description = models.CharField(max_length=255, blank=True, verbose_name="Описание")
+
+    def __str__(self):
+        return f"{self.amount} — {self.category}"
+
+    class Meta:
+        verbose_name = "Доход"
+        verbose_name_plural = "Доходы"
         ordering = ['-date']
 
 
@@ -41,6 +66,7 @@ class Subscription(models.Model):
     class Meta:
         verbose_name = "Подписка"
         verbose_name_plural = "Подписки"
+
 
 class ScheduleItem(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='schedule_items', verbose_name="Пользователь")
