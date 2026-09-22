@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from decouple import config
 import dj_database_url
+from django.conf.global_settings import LANGUAGES, LOCALE_PATHS
+from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -25,11 +27,22 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.local.LocalMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+
+LANGUAGES = [
+    ('ru', _('Русский')),
+    ('tg', _('Точики')),
+    ('en', _('English')),
+]
+
+LOCALE_PATHS = [
+    BASE_DIR / 'locale',
 ]
 
 ROOT_URLCONF = 'expense_tracker.urls'

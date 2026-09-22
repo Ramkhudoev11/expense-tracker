@@ -1,0 +1,142 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-22 14:42+0300\n"
+"PO-Revision-Date: 2026-09-22 14:42+0300\n"
+"Last-Translator: \n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Русский"
+msgstr "Russian"
+
+msgid "Тоҷикӣ"
+msgstr "Tajik"
+
+msgid "English"
+msgstr "English"
+
+msgid "Добавить"
+msgstr "Add"
+
+msgid "Распорядок"
+msgstr "Schedule"
+
+msgid "Доходы"
+msgstr "Income"
+
+msgid "Статистика"
+msgstr "Statistics"
+
+msgid "Премиум"
+msgstr "Premium"
+
+msgid "Светлая/тёмная тема"
+msgstr "Light/dark theme"
+
+msgid "Светлая тема доступна с премиум"
+msgstr "Light theme available with premium"
+
+msgid "Войти"
+msgstr "Login"
+
+msgid "Регистрация"
+msgstr "Register"
+
+msgid "Условия использования"
+msgstr "Terms of Use"
+
+msgid "Конфиденциальность"
+msgstr "Privacy"
+
+msgid "Возврат средств"
+msgstr "Refund Policy"
+
+msgid "Создано"
+msgstr "Created by"
+
+msgid "Мои расходы"
+msgstr "My Expenses"
+
+msgid "Всего потрачено"
+msgstr "Total Spent"
+
+msgid "сомонӣ"
+msgstr "somoni"
+
+msgid "Дата с"
+msgstr "Date from"
+
+msgid "Дата по"
+msgstr "Date to"
+
+msgid "Применить"
+msgstr "Apply"
+
+msgid "Сбросить"
+msgstr "Reset"
+
+msgid "Дата"
+msgstr "Date"
+
+msgid "Категория"
+msgstr "Category"
+
+msgid "Сумма"
+msgstr "Amount"
+
+msgid "Описание"
+msgstr "Description"
+
+msgid "Действия"
+msgstr "Actions"
+
+msgid "Редактировать"
+msgstr "Edit"
+
+msgid "Удалить"
+msgstr "Delete"
+
+msgid "Расходов пока нет"
+msgstr "No expenses yet"
+
+msgid "Мои доходы"
+msgstr "My Income"
+
+msgid "Всего получено"
+msgstr "Total Received"
+
+msgid "Источник"
+msgstr "Source"
+
+msgid "Добавить доход"
+msgstr "Add Income"
+
+msgid "Доходов пока нет"
+msgstr "No income yet"
+
+msgid "Распорядок дня"
+msgstr "Daily Schedule"
+
+msgid "Мой распорядок дня"
+msgstr "My Daily Schedule"
+
+msgid "Добавить пункт"
+msgstr "Add Item"
+
+msgid "Время"
+msgstr "Time"
+
+msgid "Дело"
+msgstr "Task"
+
+msgid "Заметка"
+msgstr "Note"
+
+msgid "Расписание пока пустое — добавьте первый пункт"
+msgstr "Schedule is empty — add your first item"

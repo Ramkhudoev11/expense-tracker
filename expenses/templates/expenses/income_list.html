@@ -1,44 +1,44 @@
 {% extends 'expenses/base.html' %}
-{% load expense_extras %}
-{% block title %}Мои доходы{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Мои доходы" %}{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Мои доходы</h1>
+<h1 class="page-title">{% trans "Мои доходы" %}</h1>
 
 <div class="stat-card mb-4" style="background: linear-gradient(135deg, rgba(52,211,153,0.9) 0%, rgba(16,185,129,0.9) 100%);">
-    <div class="label">Всего получено</div>
-    <div class="amount"><span id="total-amount">0</span> сомонӣ</div>
+    <div class="label">{% trans "Всего получено" %}</div>
+    <div class="amount"><span id="total-amount">0</span> {% trans "сомонӣ" %}</div>
 </div>
 
 <div class="card mb-4 p-3">
     <form method="get" class="row g-2 align-items-end">
         <div class="col-6 col-md-auto">
-            <label class="form-label small mb-1">Дата с</label>
+            <label class="form-label small mb-1">{% trans "Дата с" %}</label>
             <input type="date" name="date_from" value="{{ date_from }}" class="form-control">
         </div>
         <div class="col-6 col-md-auto">
-            <label class="form-label small mb-1">Дата по</label>
+            <label class="form-label small mb-1">{% trans "Дата по" %}</label>
             <input type="date" name="date_to" value="{{ date_to }}" class="form-control">
         </div>
         <div class="col-12 col-md-auto">
-            <button type="submit" class="btn btn-primary">Применить</button>
-            <a href="{% url 'income_list' %}" class="btn btn-outline-secondary">Сбросить</a>
+            <button type="submit" class="btn btn-primary">{% trans "Применить" %}</button>
+            <a href="{% url 'income_list' %}" class="btn btn-outline-secondary">{% trans "Сбросить" %}</a>
         </div>
     </form>
 </div>
 
-<p><a href="{% url 'add_income' %}" class="btn btn-success"><i class="bi bi-plus-lg"></i> Добавить доход</a></p>
+<p><a href="{% url 'add_income' %}" class="btn btn-success"><i class="bi bi-plus-lg"></i> {% trans "Добавить доход" %}</a></p>
 
 <div class="card p-3">
     <div class="table-responsive">
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
-                    <th>Дата</th>
-                    <th>Источник</th>
-                    <th>Сумма</th>
-                    <th>Описание</th>
-                    <th class="text-end">Действия</th>
+                    <th>{% trans "Дата" %}</th>
+                    <th>{% trans "Источник" %}</th>
+                    <th>{% trans "Сумма" %}</th>
+                    <th>{% trans "Описание" %}</th>
+                    <th class="text-end">{% trans "Действия" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -46,10 +46,10 @@
                 <tr>
                     <td>{{ income.date }}</td>
                     <td><span class="badge-category">{{ income.category }}</span></td>
-                    <td class="fw-semibold">{{ income.amount }} сомонӣ</td>
+                    <td class="fw-semibold">{{ income.amount }} {% trans "сомонӣ" %}</td>
                     <td class="text-muted">{{ income.description|default:"—" }}</td>
                     <td class="text-end">
-                        <a href="{% url 'edit_income' income.pk %}" class="btn btn-sm btn-outline-light me-1"><i class="bi bi-pencil"></i></a>
+                        <a href="{% url 'edit_income' income.pk %}" class="btn btn-sm btn-edit me-1"><i class="bi bi-pencil"></i></a>
                         <a href="{% url 'delete_income' income.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
                     </td>
                 </tr>
@@ -58,7 +58,7 @@
                     <td colspan="5">
                         <div class="empty-state">
                             <i class="bi bi-cash-coin"></i>
-                            Доходов пока нет
+                            {% trans "Доходов пока нет" %}
                         </div>
                     </td>
                 </tr>

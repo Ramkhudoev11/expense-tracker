@@ -1,0 +1,142 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-22 14:42+0300\n"
+"PO-Revision-Date: 2026-09-22 14:42+0300\n"
+"Last-Translator: \n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: tg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Русский"
+msgstr "Русӣ"
+
+msgid "Тоҷикӣ"
+msgstr "Тоҷикӣ"
+
+msgid "English"
+msgstr "Англисӣ"
+
+msgid "Добавить"
+msgstr "Илова кардан"
+
+msgid "Распорядок"
+msgstr "Барномаи рӯз"
+
+msgid "Доходы"
+msgstr "Даромадҳо"
+
+msgid "Статистика"
+msgstr "Омор"
+
+msgid "Премиум"
+msgstr "Премиум"
+
+msgid "Светлая/тёмная тема"
+msgstr "Мавзӯи равшан/торик"
+
+msgid "Светлая тема доступна с премиум"
+msgstr "Мавзӯи равшан бо премиум дастрас аст"
+
+msgid "Войти"
+msgstr "Даромадан"
+
+msgid "Регистрация"
+msgstr "Бақайдгирӣ"
+
+msgid "Условия использования"
+msgstr "Шартҳои истифода"
+
+msgid "Конфиденциальность"
+msgstr "Махфият"
+
+msgid "Возврат средств"
+msgstr "Баргардонидани маблағ"
+
+msgid "Создано"
+msgstr "Таҳия шудааст аз ҷониби"
+
+msgid "Мои расходы"
+msgstr "Хароҷоти ман"
+
+msgid "Всего потрачено"
+msgstr "Ҳамагӣ сарф шуд"
+
+msgid "сомонӣ"
+msgstr "сомонӣ"
+
+msgid "Дата с"
+msgstr "Аз санаи"
+
+msgid "Дата по"
+msgstr "То санаи"
+
+msgid "Применить"
+msgstr "Татбиқ кардан"
+
+msgid "Сбросить"
+msgstr "Тоза кардан"
+
+msgid "Дата"
+msgstr "Сана"
+
+msgid "Категория"
+msgstr "Категория"
+
+msgid "Сумма"
+msgstr "Маблағ"
+
+msgid "Описание"
+msgstr "Тавсиф"
+
+msgid "Действия"
+msgstr "Амалҳо"
+
+msgid "Редактировать"
+msgstr "Таҳрир кардан"
+
+msgid "Удалить"
+msgstr "Нест кардан"
+
+msgid "Расходов пока нет"
+msgstr "Ҳанӯз хароҷот нест"
+
+msgid "Мои доходы"
+msgstr "Даромади ман"
+
+msgid "Всего получено"
+msgstr "Ҳамагӣ гирифта шуд"
+
+msgid "Источник"
+msgstr "Манбаъ"
+
+msgid "Добавить доход"
+msgstr "Илова кардани даромад"
+
+msgid "Доходов пока нет"
+msgstr "Ҳанӯз даромад нест"
+
+msgid "Распорядок дня"
+msgstr "Барномаи рӯз"
+
+msgid "Мой распорядок дня"
+msgstr "Барномаи рӯзи ман"
+
+msgid "Добавить пункт"
+msgstr "Илова кардани банд"
+
+msgid "Время"
+msgstr "Вақт"
+
+msgid "Дело"
+msgstr "Кор"
+
+msgid "Заметка"
+msgstr "Қайд"
+
+msgid "Расписание пока пустое — добавьте первый пункт"
+msgstr "Барнома холист — банди аввалро илова кунед"

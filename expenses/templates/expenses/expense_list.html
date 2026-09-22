@@ -1,28 +1,28 @@
 {% extends 'expenses/base.html' %}
-{% load expense_extras %}
-{% block title %}Мои расходы{% endblock %}
+{% load i18n expense_extras %}
+{% block title %}{% trans "Мои расходы" %}{% endblock %}
 
 {% block content %}
-<h1 class="page-title">Мои расходы</h1>
+<h1 class="page-title">{% trans "Мои расходы" %}</h1>
 
 <div class="stat-card mb-4">
-    <div class="label">Всего потрачено</div>
-    <div class="amount"><span id="total-amount">0</span> сомонӣ</div>
+    <div class="label">{% trans "Всего потрачено" %}</div>
+    <div class="amount"><span id="total-amount">0</span> {% trans "сомонӣ" %}</div>
 </div>
 
 <div class="card mb-4 p-3">
     <form method="get" class="row g-2 align-items-end">
         <div class="col-6 col-md-auto">
-            <label class="form-label small mb-1">Дата с</label>
+            <label class="form-label small mb-1">{% trans "Дата с" %}</label>
             <input type="date" name="date_from" value="{{ date_from }}" class="form-control">
         </div>
         <div class="col-6 col-md-auto">
-            <label class="form-label small mb-1">Дата по</label>
+            <label class="form-label small mb-1">{% trans "Дата по" %}</label>
             <input type="date" name="date_to" value="{{ date_to }}" class="form-control">
         </div>
         <div class="col-12 col-md-auto">
-            <button type="submit" class="btn btn-primary">Применить</button>
-            <a href="{% url 'expense_list' %}" class="btn btn-outline-secondary">Сбросить</a>
+            <button type="submit" class="btn btn-primary">{% trans "Применить" %}</button>
+            <a href="{% url 'expense_list' %}" class="btn btn-outline-secondary">{% trans "Сбросить" %}</a>
         </div>
     </form>
 </div>
@@ -32,11 +32,11 @@
         <table class="table table-hover mb-0">
             <thead>
                 <tr>
-                    <th>Дата</th>
-                    <th>Категория</th>
-                    <th>Сумма</th>
-                    <th>Описание</th>
-                    <th class="text-end">Действия</th>
+                    <th>{% trans "Дата" %}</th>
+                    <th>{% trans "Категория" %}</th>
+                    <th>{% trans "Сумма" %}</th>
+                    <th>{% trans "Описание" %}</th>
+                    <th class="text-end">{% trans "Действия" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -48,13 +48,13 @@
                             {{ expense.category.name|category_icon }} {{ expense.category }}
                         </span>
                     </td>
-                    <td class="fw-semibold">{{ expense.amount }} сомонӣ</td>
+                    <td class="fw-semibold">{{ expense.amount }} {% trans "сомонӣ" %}</td>
                     <td class="text-muted">{{ expense.description|default:"—" }}</td>
                     <td class="text-end">
-                        <a href="{% url 'edit_expense' expense.pk %}" class="btn btn-sm btn-outline-light me-1" title="Редактировать">
+                        <a href="{% url 'edit_expense' expense.pk %}" class="btn btn-sm btn-edit me-1" title="{% trans 'Редактировать' %}">
                             <i class="bi bi-pencil"></i>
                         </a>
-                        <a href="{% url 'delete_expense' expense.pk %}" class="btn btn-sm btn-outline-danger" title="Удалить">
+                        <a href="{% url 'delete_expense' expense.pk %}" class="btn btn-sm btn-outline-danger" title="{% trans 'Удалить' %}">
                             <i class="bi bi-trash"></i>
                         </a>
                     </td>
@@ -64,7 +64,7 @@
                     <td colspan="5">
                         <div class="empty-state">
                             <i class="bi bi-inbox"></i>
-                            Расходов пока нет
+                            {% trans "Расходов пока нет" %}
                         </div>
                     </td>
                 </tr>
@@ -80,18 +80,12 @@
     const target = {{ total_json }};
     const el = document.getElementById('total-amount');
     let current = 0;
-    const duration = 800;
     const steps = 40;
     const increment = target / steps;
-    const stepTime = duration / steps;
-
     const timer = setInterval(() => {
         current += increment;
-        if (current >= target) {
-            current = target;
-            clearInterval(timer);
-        }
+        if (current >= target) { current = target; clearInterval(timer); }
         el.textContent = current.toFixed(2).replace(/\.00$/, '');
-    }, stepTime);
+    }, 20);
 </script>
 {% endblock %}

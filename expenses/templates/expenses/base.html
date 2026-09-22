@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ru" data-theme="dark">
 <head>
+    {% load i18n %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}Учёт расходов{% endblock %}</title>
@@ -192,6 +193,21 @@
             background: rgba(129, 140, 248, 0.08);
         }
 
+        .table_hovey tbody tr{
+            background: transpatent;
+        }
+
+        .btn-edit{
+            background: rgba(129, 140, 248, 0.15);
+            border: 1px solid var(--primary);
+            color: var(--primary) !important;
+        }
+
+        .btn_edit:hover {
+            background: var(--primary);
+            color: #fff !important;
+        }
+
         .badge-category {
             background: rgba(129, 140, 248, 0.15);
             color: var(--primary);
@@ -304,27 +320,36 @@
             <div class="collapse navbar-collapse justify-content-end" id="navContent">
                 <div class="d-flex flex-wrap align-items-center gap-2 mt-3 mt-lg-0">
                     {% if user.is_authenticated %}
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'add_expense' %}"><i class="bi bi-plus-lg"></i> Добавить</a>
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'schedule_list' %}"><i class="bi bi-calendar3"></i> Распорядок</a>
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'income_list' %}"><i class="bi bi-cash-coin"></i> Доходы</a>
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'stats' %}"><i class="bi bi-bar-chart"></i> Статистика</a>
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'pricing' %}"><i class="bi bi-star"></i> Премиум</a>
-                        {% if subscription and subscription.is_active %}
-    <button id="theme-toggle" class="btn btn-outline-light btn-sm" title="Светлая/тёмная тема">
+    <a class="btn btn-outline-light btn-sm" href="{% url 'add_expense' %}"><i class="bi bi-plus-lg"></i> {% trans "Добавить" %}</a>
+    <a class="btn btn-outline-light btn-sm" href="{% url 'schedule_list' %}"><i class="bi bi-calendar3"></i> {% trans "Распорядок" %}</a>
+    <a class="btn btn-outline-light btn-sm" href="{% url 'income_list' %}"><i class="bi bi-cash-coin"></i> {% trans "Доходы" %}</a>
+    <a class="btn btn-outline-light btn-sm" href="{% url 'stats' %}"><i class="bi bi-bar-chart"></i> {% trans "Статистика" %}</a>
+    <a class="btn btn-outline-light btn-sm" href="{% url 'pricing' %}"><i class="bi bi-star"></i> {% trans "Премиум" %}</a>
+    {% if subscription and subscription.is_active %}
+    <button id="theme-toggle" class="btn btn-outline-light btn-sm" title="{% trans 'Светлая/тёмная тема' %}">
         <i class="bi bi-sun-fill" id="theme-icon"></i>
     </button>
-{% else %}
-    <a href="{% url 'pricing' %}" class="btn btn-outline-light btn-sm" title="Светлая тема доступна с премиум">
+    {% else %}
+    <a href="{% url 'pricing' %}" class="btn btn-outline-light btn-sm" title="{% trans 'Светлая тема доступна с премиум' %}">
         <i class="bi bi-lock-fill"></i>
     </a>
-{% endif %}
-                        <span class="navbar-text text-light small mx-1">{{ user.username }}</span>
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i></a>
-                    {% else %}
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">Войти</a>
-                        <a class="btn btn-outline-light btn-sm" href="{% url 'register' %}">Регистрация</a>
-                    {% endif %}
-                </div>
+    {% endif %}
+    <form action="{% url 'set_language' %}" method="post" class="d-inline">
+        {% csrf_token %}
+        <select name="language" class="form-select form-select-sm d-inline-block w-auto" onchange="this.form.submit()">
+            {% get_current_language as CURRENT_LANGUAGE %}
+            {% get_available_languages as LANGUAGES %}
+            {% for lang_code, lang_name in LANGUAGES %}
+                <option value="{{ lang_code }}" {% if lang_code == CURRENT_LANGUAGE %}selected{% endif %}>{{ lang_name }}</option>
+            {% endfor %}
+        </select>
+    </form>
+    <span class="navbar-text text-light small mx-1">{{ user.username }}</span>
+    <a class="btn btn-outline-light btn-sm" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right"></i></a>
+{% else %}
+    <a class="btn btn-outline-light btn-sm" href="{% url 'login' %}">{% trans "Войти" %}</a>
+    <a class="btn btn-outline-light btn-sm" href="{% url 'register' %}">{% trans "Регистрация" %}</a>
+{% endif %}                </div>
             </div>
         </div>
     </nav>
@@ -336,12 +361,12 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     {% block extra_js %}{% endblock %}
-    <footer class="text-center text-muted small py-4 mt-5">
-        <a href="{% url 'terms' %}" class="text-muted me-3">Условия использования</a>
-        <a href="{% url 'privacy' %}" class="text-muted me-3">Конфиденциальность</a>
-        <a href="{% url 'refund' %}" class="text-muted">Возврат средств</a>
-    </footer>
-
+<footer class="text-center text-muted small py-4 mt-5">
+    <a href="{% url 'terms' %}" class="text-muted me-3">{% trans "Условия использования" %}</a>
+    <a href="{% url 'privacy' %}" class="text-muted me-3">{% trans "Конфиденциальность" %}</a>
+    <a href="{% url 'refund' %}" class="text-muted">{% trans "Возврат средств" %}</a>
+    <div class="mt-2">{% trans "Создано" %} Ramkhudoev P.</div>
+</footer>
     <script>
     (function() {
         const savedTheme = localStorage.getItem('theme') || 'dark';
