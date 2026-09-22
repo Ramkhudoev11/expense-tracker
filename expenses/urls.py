@@ -8,6 +8,17 @@ urlpatterns = [
     path('add/', views.add_expense, name='add_expense'),
     path('edit/<int:pk>/', views.edit_expense, name='edit_expense'),
     path('delete/<int:pk>/', views.delete_expense, name='delete_expense'),
+
+    path('income/', views.income_list, name='income_list'),
+    path('income/add/', views.add_income, name='add_income'),
+    path('income/edit/<int:pk>/', views.edit_income, name='edit_income'),
+    path('income/delete/<int:pk>/', views.delete_income, name='delete_income'),
+
+    path('schedule/', views.schedule_list, name='schedule_list'),
+    path('schedule/add/', views.add_schedule_item, name='add_schedule_item'),
+    path('schedule/edit/<int:pk>/', views.edit_schedule_item, name='edit_schedule_item'),
+    path('schedule/delete/<int:pk>/', views.delete_schedule_item, name='delete_schedule_item'),
+
     path('stats/', views.stats, name='stats'),
     path('register/', views.register, name='register'),
     path('login/', LoginView.as_view(template_name='expenses/login.html', authentication_form=LoginForm), name='login'),
@@ -18,8 +29,4 @@ urlpatterns = [
     path('terms/', views.terms, name='terms'),
     path('privacy/', views.privacy, name='privacy'),
     path('refund/', views.refund, name='refund'),
-    path('schedule/', views.schedule_list, name='schedule_list'),
-    path('schedule/add/', views.add_schedule_item, name='add_schedule_item'),
-    path('schedule/edit/<int:pk>/', views.edit_schedule_item, name='edit_schedule_item'),
-    path('schedule/delete/<int:pk>/', views.delete_schedule_item, name='delete_schedule_item'),
 ]
